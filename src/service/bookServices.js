@@ -1,5 +1,4 @@
 import bookRepository from "../repositores/bookRepositories.js";
-import bcrypt from "bcrypt"
 
 async function createBookService(newBook, userId){
    // const foundBook = await userRepository.findUserByEmailRepository(newUser.email);
