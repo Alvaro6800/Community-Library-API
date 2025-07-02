@@ -38,83 +38,89 @@ function findAllBooksRepository(){
     })
 }
 
-// function findUserByEmailRepository(userEmail){
-//     return new Promise((res,rej) => {
-//         db.get(`
-//             SELECT id, username, email, avatar, password
-//             FROM users
-//             WHERE email = ?   
-//         `, [userEmail], (err, row) => {
-//             if(err)
-//                 rej(err)
-//             else
-//                 res(row)
-//         })
-//     })
-// }
-// 
-// function findUserByIdRepository(userId){
-//     return new Promise((res,rej) => {
-//         db.get(`
-//             SELECT id, username, email, avatar 
-//             FROM users
-//             WHERE id = ?   
-//         `, [userId], (err, row) => {
-//             if(err)
-//                 rej(err)
-//             else
-//                 res(row)
-//         })
-//     })
-// }
-// 
-// function updateUserRepository(userId, user){
-//     return new Promise((res,rej) => {
-//         const fields = ['username', 'email', 'password', 'avatar'];
-//         const values = []
-//         let query = "UPDATE users SET"
-//         
-//         
-//         fields.forEach((field) => {
-//             if(user[field] !== undefined){
-//                 query += ` ${field} = ?,`
-//                 values.push(user[field])
-//             }
-//         })
-// 
-//         query = query.slice(0, -1);
-// 
-//         query += " WHERE id = ?"
-// 
-//         values.push(userId)
-// 
-//         db.run(query, values, (err) => {
-//             if(err)
-//                 rej(err)
-//             else
-//                 res({...user, userId})
-//         })
-//     })
-// }
-// 
-// function deleteUserRepository(userId){
-//     return new Promise((resolve, reject) => {
-//         db.run(`
-//             DELETE FROM users 
-//             WHERE id = ?   
-//         `, [userId], (err) => {
-//             if(err){
-//                 reject(err)
-//             }
-//             else{
-//                 resolve({message: "User deleted successfully", userId})
-//             }
-//                 
-//         })
-//     })
-// }
+function findBookByIdRepository(bookId){
+    return new Promise((res,rej) => {
+        db.get(`
+            SELECT *
+            FROM books
+            WHERE id = ?   
+        `, [bookId], (err, row) => {
+            if(err)
+                rej(err)
+            else{
+                res(row)
+            }
+                
+        })
+    })
+}
+
+function updateBookRepository(bookId, updatedBook){
+    return new Promise((res,rej) => {
+        const fields = ['author', 'title', 'userId'];
+        const values = []
+        let query = "UPDATE books SET"
+        
+        
+        fields.forEach((field) => {
+            if(updatedBook[field] !== undefined){
+                query += ` ${field} = ?,`
+                values.push(updatedBook[field])
+            }
+        })
+
+        query = query.slice(0, -1);
+
+        query += " WHERE id = ?"
+
+        values.push(bookId)
+
+        db.run(query, values, (err) => {
+            if(err)
+                rej(err)
+            else
+                res({id: bookId, ...updatedBook})
+        })
+    })
+}
+
+function deleteBookRepository(bookId){
+    return new Promise((resolve, reject) => {
+        db.run(`
+            DELETE FROM books 
+            WHERE id = ?   
+        `, [bookId], (err) => {
+            if(err){
+                reject(err)
+            }
+            else{
+                resolve({message: "Book deleted successfully", bookId})
+            }
+                
+        })
+    })
+}
+
+function searchBookRepository(search){
+    return new Promise((res, rej) => {
+        db.all(`
+            SELECT * FROM books
+            WHERE title LIKE ? OR author LIKE ?
+        `, [`%${search}%`, `%${search}%`], (err, rows) => {
+            if(err)
+                rej(err)
+            else
+                res(rows)
+        })
+    })
+}
+
 
 export default {
     createBookRepository
     , findAllBooksRepository
+    , findBookByIdRepository
+    , updateBookRepository
+    , deleteBookRepository
+    , searchBookRepository
 }

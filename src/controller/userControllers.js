@@ -58,7 +58,6 @@ async function updateUserController (req, res){
 
 async function deleteUserController (req, res){
     const {id} = req.params;
-    console.log(id)
 
     try{
         const message = await userService.deleteUserService(id);
