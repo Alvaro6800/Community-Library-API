@@ -28,7 +28,17 @@ function createLoanRepository(userId, bookId, dueDate){
 function findAllLoansRepository(){
     return new Promise((res, rej) => {
         db.all(`
-            SELECT * FROM loans
+            SELECT 
+            LNS.id
+            , LNS.userId
+            , LNS.bookId
+            , LNS.dueDate
+            , USR.username
+            , USR.email AS userEmail
+            , BKS.title AS bookTitle
+            FROM loans LNS
+            INNER JOIN users USR ON LNS.userId = USR.id
+            INNER JOIN books BKS ON LNS.bookId = BKS.id
         `, [], (err, rows) => {
             if(err)
                 rej(err)
